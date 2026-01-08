@@ -10,6 +10,9 @@ type RelativeToEaster struct {
 
 // RelativeToEasterDays represents a collection of movable feasts/fasts whose dates are relative to the date of Easter
 var RelativeToEasterDays = []RelativeToEaster{
+	{"Septuagesima Sunday", -63},
+	{"Sexagesima Sunday", -56},
+	{"Quinguagesima Sunday", -49},
 	{"Ash Wednesday", -46},
 	{"Palm Sunday", -7},
 	{"Spy Wednesday", -4},
