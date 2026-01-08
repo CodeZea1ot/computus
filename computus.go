@@ -17,6 +17,7 @@ var RelativeToEasterDays = []RelativeToEaster{
 	{"Ember Wednesday (Lent)", -39},
 	{"Ember Friday (Lent)", -37},
 	{"Ember Saturday (Lent)", -36},
+	{"Passion Sunday", -14},
 	{"Palm Sunday", -7},
 	{"Spy Wednesday", -4},
 	{"Holy Thursday", -3},
