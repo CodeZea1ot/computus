@@ -28,6 +28,7 @@ var RelativeToEasterDays = []RelativeToEaster{
 	{"The Octave of Easter (Low Sunday)", 7},
 	{"Ascension", 39},
 	{"Pentecost", 49},
+	{"Trinity Sunday", 56},
 	{"Corpus Christi", 60},
 }
 
@@ -106,3 +107,6 @@ func EasterMonday(year int) time.Time { return relativeToEaster(year, "Easter Mo
 
 // EasterTuesday calculates the date of Easter Tuesday for a given year
 func EasterTuesday(year int) time.Time { return relativeToEaster(year, "EasterTuesday") }
+
+// TrinitySunday calculates the date of Trinity Sunday for a given year
+func TrinitySunday(year int) time.Time { return relativeToEaster(year, "Trinity Sunday") }
