@@ -52,3 +52,10 @@ func Pentecost(year int) time.Time {
 	easter := Easter(year)
 	return easter.AddDate(0, 0, 49)
 }
+
+// Ascension returns the date of Ascension Thursday for the given year.
+// Ascension is always 39 days after Easter Sunday.
+func Ascension(year int) time.Time {
+	easter := Easter(year)
+	return easter.AddDate(0, 0, 39)
+}
