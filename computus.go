@@ -38,3 +38,10 @@ func PalmSunday(year int) time.Time {
 	easter := Easter(year)
 	return easter.AddDate(0, 0, -7)
 }
+
+// GoodFriday returns the date of Good Friday for the given year.
+// Good Friday is always 2 days before Easter Sunday.
+func GoodFriday(year int) time.Time {
+	easter := Easter(year)
+	return easter.AddDate(0, 0, -2)
+}

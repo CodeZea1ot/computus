@@ -134,3 +134,38 @@ func TestPalmSundayInRange(t *testing.T) {
 		}
 	}
 }
+
+// TestGoodFriday verifies that Good Friday is correctly calculated
+// as 2 days before Easter Sunday for a selection of known years.
+func TestGoodFriday(t *testing.T) {
+	verifiedDates := map[int]string{
+		2020: "2020-04-10",
+		2021: "2021-04-02",
+		2022: "2022-04-15",
+		2023: "2023-04-07",
+		2024: "2024-03-29",
+		2025: "2025-04-18",
+		2026: "2026-04-03",
+	}
+
+	for year, expected := range verifiedDates {
+		got := GoodFriday(year).Format("2006-01-02")
+		if got != expected {
+			t.Errorf("GoodFriday(%d) = %s, want %s", year, got, expected)
+		}
+	}
+}
+
+// TestGoodFridayInRange ensures that Good Friday is always exactly
+// 2 days before Easter Sunday for all Gregorian years.
+func TestGoodFridayInRange(t *testing.T) {
+	for year := 1583; year <= 3000; year++ {
+		goodFriday := GoodFriday(year)
+		easter := Easter(year)
+
+		diff := int(easter.Sub(goodFriday).Hours() / 24)
+		if diff != 2 {
+			t.Fatalf("GoodFriday(%d) is %d days before Easter, want 2", year, diff)
+		}
+	}
+}
