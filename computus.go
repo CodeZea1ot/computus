@@ -2,6 +2,24 @@ package computus
 
 import "time"
 
+// RelativeToEaster represents a moveable feast or fast whose date is relative to Easter
+type RelativeToEaster struct {
+	Name   string // Name of the feast/fast
+	Offset int    // Days relative to Easter (negative = before, positive = after)
+}
+
+// RelativeToEasterDays represents a collection of movable feasts/fasts whose dates are relative to the date of Easter
+var RelativeToEasterDays = []RelativeToEaster{
+	{"Ash Wednesday", -46},
+	{"Palm Sunday", -7},
+	{"Spy Wednesday", -4},
+	{"Holy Thursday", -3},
+	{"Good Friday", -2},
+	{"Holy Saturday", -1},
+	{"Ascension", 39},
+	{"Pentecost", 49},
+}
+
 // Easter returns the date of Easter Sunday for the given year
 // using the Anonymous Gregorian Algorithm.
 // ref: https://en.wikipedia.org/wiki/Date_of_Easter#Anonymous_Gregorian_algorithm
@@ -25,55 +43,36 @@ func Easter(year int) time.Time {
 	return time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC)
 }
 
-// AshWednesday returns the date of Ash Wednesday for the given year.
-// Ash Wednesday is 46 days before Easter Sunday.
-func AshWednesday(year int) time.Time {
-	easter := Easter(year)
-	return easter.AddDate(0, 0, -46)
+// relativeToEaster calculates and returns the date of a given feast/fast for a given year by applying an offset to the date of Easter for the same year.
+func relativeToEaster(year int, name string) time.Time {
+	for _, r := range RelativeToEasterDays {
+		if r.Name == name {
+			return Easter(year).AddDate(0, 0, r.Offset)
+		}
+	}
+	panic("Unknown feast/fast: " + name)
 }
 
-// PalmSunday returns the date of Palm Sunday for the given year.
-// Palm Sunday is always 7 days before Easter Sunday.
-func PalmSunday(year int) time.Time {
-	easter := Easter(year)
-	return easter.AddDate(0, 0, -7)
-}
+// AshWednesday calculates the date of Ash Wednesday for a given year
+func AshWednesday(year int) time.Time { return relativeToEaster(year, "Ash Wednesday") }
 
-// SpyWednesday returns the date of Spy Wednesday for the given year.
-// Spy Wednesday is always 4 days before Easter Sunday.
-func SpyWednesday(year int) time.Time {
-	return Easter(year).AddDate(0, 0, -4)
-}
+// PalmSunday calculates the date of Palm Sunday for a given year
+func PalmSunday(year int) time.Time { return relativeToEaster(year, "Palm Sunday") }
 
-// HolyThursday returns the date of Holy Thursday for the given year.
-// Holy Thursday is always 3 days before Easter Sunday.
-func HolyThursday(year int) time.Time {
-	return Easter(year).AddDate(0, 0, -3)
-}
+// SpyWednesday calculates the date of Spy Wednesday for a given year
+func SpyWednesday(year int) time.Time { return relativeToEaster(year, "Spy Wednesday") }
 
-// GoodFriday returns the date of Good Friday for the given year.
-// Good Friday is always 2 days before Easter Sunday.
-func GoodFriday(year int) time.Time {
-	easter := Easter(year)
-	return easter.AddDate(0, 0, -2)
-}
+// HolyThursday calculates the date of Holy Thursday for a given year
+func HolyThursday(year int) time.Time { return relativeToEaster(year, "Holy Thursday") }
 
-// HolySaturday returns the date of Holy Saturday for the given year.
-// Holy Saturday is always 1 day before Easter Sunday.
-func HolySaturday(year int) time.Time {
-	return Easter(year).AddDate(0, 0, -1)
-}
+// GoodFriday calculates the date of Good Friday for a given year
+func GoodFriday(year int) time.Time { return relativeToEaster(year, "Good Friday") }
 
-// Pentecost returns the date of Pentecost for the given year.
-// Pentecost is always 49 days (7 weeks) after Easter Sunday.
-func Pentecost(year int) time.Time {
-	easter := Easter(year)
-	return easter.AddDate(0, 0, 49)
-}
+// HolySaturday calculates the date of Holy Saturday for a given year
+func HolySaturday(year int) time.Time { return relativeToEaster(year, "Holy Saturday") }
 
-// Ascension returns the date of Ascension Thursday for the given year.
-// Ascension is always 39 days after Easter Sunday.
-func Ascension(year int) time.Time {
-	easter := Easter(year)
-	return easter.AddDate(0, 0, 39)
-}
+// Ascension calculates the date of Ascension for a given year
+func Ascension(year int) time.Time { return relativeToEaster(year, "Ascension") }
+
+// Pentecost calculates the date of Pentecost for a given year
+func Pentecost(year int) time.Time { return relativeToEaster(year, "Pentecost") }

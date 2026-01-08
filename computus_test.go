@@ -2,7 +2,6 @@ package computus
 
 import (
 	"testing"
-	"time"
 )
 
 // VerifiedEasterDates contains historically verified Easter Sunday dates.
@@ -27,6 +26,35 @@ var verifiedEasterDates = map[int]string{
 	2025: "2025-04-20",
 	2026: "2026-04-05",
 	2038: "2038-04-25", // latest possible Easter
+}
+
+// checkDaysFromEaster validates that the relative feast/fasts fall on
+// the correct number of days from Easter for all years in the range.
+func checkDaysFromEaster(t *testing.T, name string) {
+	beginYear := 1583
+	endYear := 3000
+	var offset int
+	found := false
+	for _, r := range RelativeToEasterDays {
+		if r.Name == name {
+			offset = r.Offset
+			found = true
+			break
+		}
+	}
+	if !found {
+		t.Fatalf("feast %q not found in RelativeToEasterDays", name)
+	}
+
+	for year := beginYear; year <= endYear; year++ {
+		dayToCheck := relativeToEaster(year, name)
+		easter := Easter(year)
+
+		diff := int(dayToCheck.Sub(easter).Hours() / 24)
+		if diff != offset {
+			t.Fatalf("%s(%d) is %d days from Easter, want %d", name, year, diff, offset)
+		}
+	}
 }
 
 // TestEaster verifies that the Easter calculation function
@@ -63,223 +91,9 @@ func TestEasterInRange(t *testing.T) {
 	}
 }
 
-// TestAshWednesday verifies that Ash Wednesday is correctly calculated
-// as 46 days before Easter Sunday for a selection of known years.
-func TestAshWednesday(t *testing.T) {
-	for year, easterStr := range verifiedEasterDates {
-		easter, _ := time.Parse("2006-01-02", easterStr)
-		expected := easter.AddDate(0, 0, -46).Format("2006-01-02")
-		got := AshWednesday(year).Format("2006-01-02")
-		if got != expected {
-			t.Errorf("AshWednesday(%d) = %s, want %s", year, got, expected)
-		}
-	}
-}
-
-// TestAshWednesdayInRange verifies that the Ash Wednesday calculation
-// is correct for all Gregorian years from 1583 to 3000.
-// According to the liturgical rules, Ash Wednesday must always
-// fall exactly 46 days before Easter Sunday. This test computes
-// Easter for each year in the range and ensures that Ash Wednesday
-// is precisely 46 days earlier.
-func TestAshWednesdayInRange(t *testing.T) {
-	for year := 1583; year <= 3000; year++ {
-		ash := AshWednesday(year)
-		easter := Easter(year)
-
-		// Must always be 46 days before Easter
-		diff := int(easter.Sub(ash).Hours() / 24)
-		if diff != 46 {
-			t.Fatalf("AshWednesday(%d) is %d days before Easter, want 46", year, diff)
-		}
-	}
-}
-
-// TestPalmSunday verifies that Palm Sunday is correctly calculated
-// as 7 days before Easter Sunday for a selection of known years.
-func TestPalmSunday(t *testing.T) {
-	for year, easterStr := range verifiedEasterDates {
-		easter, _ := time.Parse("2006-01-02", easterStr)
-		expected := easter.AddDate(0, 0, -7).Format("2006-01-02")
-		got := PalmSunday(year).Format("2006-01-02")
-		if got != expected {
-			t.Errorf("PalmSunday(%d) = %s, want %s", year, got, expected)
-		}
-	}
-}
-
-// TestPalmSundayInRange verifies that Palm Sunday is always
-// exactly 7 days before Easter Sunday for all Gregorian years.
-func TestPalmSundayInRange(t *testing.T) {
-	for year := 1583; year <= 3000; year++ {
-		palm := PalmSunday(year)
-		easter := Easter(year)
-
-		diff := int(easter.Sub(palm).Hours() / 24)
-		if diff != 7 {
-			t.Fatalf("PalmSunday(%d) is %d days before Easter, want 7", year, diff)
-		}
-	}
-}
-
-// TestSpyWednesday verifies that Spy Wednesday is correctly calculated
-// as 4 days before Easter Sunday for a selection of known years.
-func TestSpyWednesday(t *testing.T) {
-	for year, easterStr := range verifiedEasterDates {
-		easter, _ := time.Parse("2006-01-02", easterStr)
-		expected := easter.AddDate(0, 0, -4).Format("2006-01-02")
-		got := SpyWednesday(year).Format("2006-01-02")
-		if got != expected {
-			t.Errorf("SpyWednesday(%d) = %s, want %s", year, got, expected)
-		}
-	}
-}
-
-// TestSpyWednesdayInRange ensures that Spy Wednessday is always exactly
-// 4 days before Easter Sunday for all Gregorian years.
-func TestSpyWednesdayInRange(t *testing.T) {
-	for year := 1583; year <= 3000; year++ {
-		spyWednesday := SpyWednesday(year)
-		easter := Easter(year)
-
-		diff := int(easter.Sub(spyWednesday).Hours() / 24)
-		if diff != 4 {
-			t.Fatalf("SpyWednesday(%d) is %d days before Easter, want 4", year, diff)
-		}
-	}
-}
-
-// TestHolyThursday verifies that Holy Thursday is correctly calculated
-// as 3 days before Easter Sunday for a selection of known years.
-func TestHolyThursday(t *testing.T) {
-	for year, easterStr := range verifiedEasterDates {
-		easter, _ := time.Parse("2006-01-02", easterStr)
-		expected := easter.AddDate(0, 0, -3).Format("2006-01-02")
-		got := HolyThursday(year).Format("2006-01-02")
-		if got != expected {
-			t.Errorf("HolyThursday(%d) = %s, want %s", year, got, expected)
-		}
-	}
-}
-
-// TestHolyThursdayInRange ensures that Holy Thursday is always exactly
-// 3 days before Easter Sunday for all Gregorian years.
-func TestHolyThursdayInRange(t *testing.T) {
-	for year := 1583; year <= 3000; year++ {
-		holyThursday := HolyThursday(year)
-		easter := Easter(year)
-
-		diff := int(easter.Sub(holyThursday).Hours() / 24)
-		if diff != 3 {
-			t.Fatalf("HolyThursday(%d) is %d days before Easter, want 2", year, diff)
-		}
-	}
-}
-
-// TestGoodFriday verifies that Good Friday is correctly calculated
-// as 2 days before Easter Sunday for a selection of known years.
-func TestGoodFriday(t *testing.T) {
-	for year, easterStr := range verifiedEasterDates {
-		easter, _ := time.Parse("2006-01-02", easterStr)
-		expected := easter.AddDate(0, 0, -2).Format("2006-01-02")
-		got := GoodFriday(year).Format("2006-01-02")
-		if got != expected {
-			t.Errorf("GoodFriday(%d) = %s, want %s", year, got, expected)
-		}
-	}
-}
-
-// TestGoodFridayInRange ensures that Good Friday is always exactly
-// 2 days before Easter Sunday for all Gregorian years.
-func TestGoodFridayInRange(t *testing.T) {
-	for year := 1583; year <= 3000; year++ {
-		goodFriday := GoodFriday(year)
-		easter := Easter(year)
-
-		diff := int(easter.Sub(goodFriday).Hours() / 24)
-		if diff != 2 {
-			t.Fatalf("GoodFriday(%d) is %d days before Easter, want 2", year, diff)
-		}
-	}
-}
-
-// TestHolySaturday verifies that Holy Saturday is correctly calculated
-// as 3 days before Easter Sunday for a selection of known years.
-func TestHolySaturday(t *testing.T) {
-	for year, easterStr := range verifiedEasterDates {
-		easter, _ := time.Parse("2006-01-02", easterStr)
-		expected := easter.AddDate(0, 0, -1).Format("2006-01-02")
-		got := HolySaturday(year).Format("2006-01-02")
-		if got != expected {
-			t.Errorf("HolySaturday(%d) = %s, want %s", year, got, expected)
-		}
-	}
-}
-
-// TestHolySaturdayInRange ensures that Holy Saturday is always exactly
-// 1 day before Easter Sunday for all Gregorian years.
-func TestHolySaturdayInRange(t *testing.T) {
-	for year := 1583; year <= 3000; year++ {
-		holySaturday := HolySaturday(year)
-		easter := Easter(year)
-
-		diff := int(easter.Sub(holySaturday).Hours() / 24)
-		if diff != 1 {
-			t.Fatalf("HolySaturday(%d) is %d days before Easter, want 2", year, diff)
-		}
-	}
-}
-
-// TestPentecost verifies that Pentecost is correctly calculated
-// as 49 days after Easter Sunday for a selection of known years.
-func TestPentecost(t *testing.T) {
-	for year, easterStr := range verifiedEasterDates {
-		easter, _ := time.Parse("2006-01-02", easterStr)
-		expected := easter.AddDate(0, 0, 49).Format("2006-01-02")
-		got := Pentecost(year).Format("2006-01-02")
-		if got != expected {
-			t.Errorf("Pentecost(%d) = %s, want %s", year, got, expected)
-		}
-	}
-}
-
-// TestPentecostInRange ensures that Pentecost is always exactly
-// 49 days after Easter Sunday for all Gregorian years.
-func TestPentecostInRange(t *testing.T) {
-	for year := 1583; year <= 3000; year++ {
-		pentecost := Pentecost(year)
-		easter := Easter(year)
-
-		diff := int(pentecost.Sub(easter).Hours() / 24)
-		if diff != 49 {
-			t.Fatalf("Pentecost(%d) is %d days after Easter, want 49", year, diff)
-		}
-	}
-}
-
-// TestAscension verifies that Ascension Thursday is correctly calculated
-// as 39 days after Easter Sunday for a selection of known years.
-func TestAscension(t *testing.T) {
-	for year, easterStr := range verifiedEasterDates {
-		easter, _ := time.Parse("2006-01-02", easterStr)
-		expected := easter.AddDate(0, 0, 39).Format("2006-01-02")
-		got := Ascension(year).Format("2006-01-02")
-		if got != expected {
-			t.Errorf("Ascension(%d) = %s, want %s", year, got, expected)
-		}
-	}
-}
-
-// TestAscensionInRange ensures that Ascension Thursday is always exactly
-// 39 days after Easter Sunday for all Gregorian years.
-func TestAscensionInRange(t *testing.T) {
-	for year := 1583; year <= 3000; year++ {
-		ascension := Ascension(year)
-		easter := Easter(year)
-
-		diff := int(ascension.Sub(easter).Hours() / 24)
-		if diff != 39 {
-			t.Fatalf("Ascension(%d) is %d days after Easter, want 39", year, diff)
-		}
+// TestRelativeToEasterInRange tests the validity of all feasts/fasts whose assigned date is relative to Easter
+func TestRelativeToEasterInRange(t *testing.T) {
+	for _, r := range RelativeToEasterDays {
+		checkDaysFromEaster(t, r.Name)
 	}
 }
