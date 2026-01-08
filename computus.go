@@ -31,3 +31,10 @@ func AshWednesday(year int) time.Time {
 	easter := Easter(year)
 	return easter.AddDate(0, 0, -46)
 }
+
+// PalmSunday returns the date of Palm Sunday for the given year.
+// Palm Sunday is always 7 days before Easter Sunday.
+func PalmSunday(year int) time.Time {
+	easter := Easter(year)
+	return easter.AddDate(0, 0, -7)
+}

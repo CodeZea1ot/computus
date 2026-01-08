@@ -99,3 +99,38 @@ func TestAshWednesdayInRange(t *testing.T) {
 		}
 	}
 }
+
+// TestPalmSunday verifies that Palm Sunday is correctly calculated
+// as 7 days before Easter Sunday for a selection of known years.
+func TestPalmSunday(t *testing.T) {
+	verifiedDates := map[int]string{
+		2020: "2020-04-05",
+		2021: "2021-03-28",
+		2022: "2022-04-10",
+		2023: "2023-04-02",
+		2024: "2024-03-24",
+		2025: "2025-04-13",
+		2026: "2026-03-29",
+	}
+
+	for year, expected := range verifiedDates {
+		got := PalmSunday(year).Format("2006-01-02")
+		if got != expected {
+			t.Errorf("PalmSunday(%d) = %s, want %s", year, got, expected)
+		}
+	}
+}
+
+// TestPalmSundayInRange verifies that Palm Sunday is always
+// exactly 7 days before Easter Sunday for all Gregorian years.
+func TestPalmSundayInRange(t *testing.T) {
+	for year := 1583; year <= 3000; year++ {
+		palm := PalmSunday(year)
+		easter := Easter(year)
+
+		diff := int(easter.Sub(palm).Hours() / 24)
+		if diff != 7 {
+			t.Fatalf("PalmSunday(%d) is %d days before Easter, want 7", year, diff)
+		}
+	}
+}
