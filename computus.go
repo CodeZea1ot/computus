@@ -18,6 +18,7 @@ var RelativeToEasterDays = []RelativeToEaster{
 	{"Holy Saturday", -1},
 	{"Ascension", 39},
 	{"Pentecost", 49},
+	{"Corpus Christi", 60},
 }
 
 // Easter returns the date of Easter Sunday for the given year
@@ -76,3 +77,6 @@ func Ascension(year int) time.Time { return relativeToEaster(year, "Ascension") 
 
 // Pentecost calculates the date of Pentecost for a given year
 func Pentecost(year int) time.Time { return relativeToEaster(year, "Pentecost") }
+
+// CorpusChristi calculates the date of CorpusChristi for a given year
+func CorpusChristi(year int) time.Time { return relativeToEaster(year, "Corpus Christi") }
