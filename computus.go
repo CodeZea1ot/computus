@@ -23,6 +23,9 @@ var RelativeToEasterDays = []RelativeToEaster{
 	{"Holy Thursday", -3},
 	{"Good Friday", -2},
 	{"Holy Saturday", -1},
+	{"Easter Monday", 1},
+	{"Easter Tuesday", 2},
+	{"The Octave of Easter (Low Sunday)", 7},
 	{"Ascension", 39},
 	{"Pentecost", 49},
 	{"Corpus Christi", 60},
@@ -87,3 +90,19 @@ func Pentecost(year int) time.Time { return relativeToEaster(year, "Pentecost") 
 
 // CorpusChristi calculates the date of CorpusChristi for a given year
 func CorpusChristi(year int) time.Time { return relativeToEaster(year, "Corpus Christi") }
+
+// OctaveOfEaster calculates the date of The Octave of Easter (Low Sunday) for a given year
+func OctaveOfEaster(year int) time.Time {
+	return relativeToEaster(year, "The Octave of Easter (Low Sunday)")
+}
+
+// LowSunday is a wrapper around OctaveOfEaster. It calculates the date of The Octave of Easter (Low Sunday) for a given year
+func LowSunday(year int) time.Time {
+	return OctaveOfEaster(year)
+}
+
+// EasterMonday calculates the date of Easter Monday for a given year
+func EasterMonday(year int) time.Time { return relativeToEaster(year, "Easter Monday") }
+
+// EasterTuesday calculates the date of Easter Tuesday for a given year
+func EasterTuesday(year int) time.Time { return relativeToEaster(year, "EasterTuesday") }
