@@ -45,3 +45,10 @@ func GoodFriday(year int) time.Time {
 	easter := Easter(year)
 	return easter.AddDate(0, 0, -2)
 }
+
+// Pentecost returns the date of Pentecost for the given year.
+// Pentecost is always 49 days (7 weeks) after Easter Sunday.
+func Pentecost(year int) time.Time {
+	easter := Easter(year)
+	return easter.AddDate(0, 0, 49)
+}

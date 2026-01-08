@@ -169,3 +169,38 @@ func TestGoodFridayInRange(t *testing.T) {
 		}
 	}
 }
+
+// TestPentecost verifies that Pentecost is correctly calculated
+// as 49 days after Easter Sunday for a selection of known years.
+func TestPentecost(t *testing.T) {
+	verifiedDates := map[int]string{
+		2020: "2020-05-31",
+		2021: "2021-05-23",
+		2022: "2022-06-05",
+		2023: "2023-05-28",
+		2024: "2024-05-19",
+		2025: "2025-06-08",
+		2026: "2026-05-24",
+	}
+
+	for year, expected := range verifiedDates {
+		got := Pentecost(year).Format("2006-01-02")
+		if got != expected {
+			t.Errorf("Pentecost(%d) = %s, want %s", year, got, expected)
+		}
+	}
+}
+
+// TestPentecostInRange ensures that Pentecost is always exactly
+// 49 days after Easter Sunday for all Gregorian years.
+func TestPentecostInRange(t *testing.T) {
+	for year := 1583; year <= 3000; year++ {
+		pentecost := Pentecost(year)
+		easter := Easter(year)
+
+		diff := int(pentecost.Sub(easter).Hours() / 24)
+		if diff != 49 {
+			t.Fatalf("Pentecost(%d) is %d days after Easter, want 49", year, diff)
+		}
+	}
+}
