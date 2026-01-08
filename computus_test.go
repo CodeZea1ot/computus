@@ -141,12 +141,39 @@ func TestHolyThursday(t *testing.T) {
 // 3 days before Easter Sunday for all Gregorian years.
 func TestHolyThursdayInRange(t *testing.T) {
 	for year := 1583; year <= 3000; year++ {
-		goodFriday := HolyThursday(year)
+		holyThursday := HolyThursday(year)
 		easter := Easter(year)
 
-		diff := int(easter.Sub(goodFriday).Hours() / 24)
+		diff := int(easter.Sub(holyThursday).Hours() / 24)
 		if diff != 3 {
 			t.Fatalf("HolyThursday(%d) is %d days before Easter, want 2", year, diff)
+		}
+	}
+}
+
+// TestHolySaturday verifies that Holy Saturday is correctly calculated
+// as 3 days before Easter Sunday for a selection of known years.
+func TestHolySaturday(t *testing.T) {
+	for year, easterStr := range verifiedEasterDates {
+		easter, _ := time.Parse("2006-01-02", easterStr)
+		expected := easter.AddDate(0, 0, -1).Format("2006-01-02")
+		got := HolySaturday(year).Format("2006-01-02")
+		if got != expected {
+			t.Errorf("HolySaturday(%d) = %s, want %s", year, got, expected)
+		}
+	}
+}
+
+// TestHolyThursdayInRange ensures that Holy Thursday is always exactly
+// 3 days before Easter Sunday for all Gregorian years.
+func TestHolySaturdayInRange(t *testing.T) {
+	for year := 1583; year <= 3000; year++ {
+		holySaturday := HolySaturday(year)
+		easter := Easter(year)
+
+		diff := int(easter.Sub(holySaturday).Hours() / 24)
+		if diff != 1 {
+			t.Fatalf("HolySaturday(%d) is %d days before Easter, want 2", year, diff)
 		}
 	}
 }

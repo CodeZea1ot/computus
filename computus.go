@@ -52,6 +52,12 @@ func GoodFriday(year int) time.Time {
 	return easter.AddDate(0, 0, -2)
 }
 
+// HolySaturday returns the date of Holy Saturday for the given year.
+// Holy Saturday is always 1 day before Easter Sunday.
+func HolySaturday(year int) time.Time {
+	return Easter(year).AddDate(0, 0, -1)
+}
+
 // Pentecost returns the date of Pentecost for the given year.
 // Pentecost is always 49 days (7 weeks) after Easter Sunday.
 func Pentecost(year int) time.Time {
