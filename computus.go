@@ -39,6 +39,12 @@ func PalmSunday(year int) time.Time {
 	return easter.AddDate(0, 0, -7)
 }
 
+// HolyThursday returns the date of Holy Thursday for the given year.
+// Holy Thursday is always 3 days before Easter Sunday.
+func HolyThursday(year int) time.Time {
+	return Easter(year).AddDate(0, 0, -3)
+}
+
 // GoodFriday returns the date of Good Friday for the given year.
 // Good Friday is always 2 days before Easter Sunday.
 func GoodFriday(year int) time.Time {
