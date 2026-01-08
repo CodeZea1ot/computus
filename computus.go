@@ -67,46 +67,66 @@ func Easter(year int) time.Time {
 	return time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC)
 }
 
-// relativeToEaster calculates and returns the date of a given feast/fast for a given year by applying an offset to the date of Easter for the same year.
-func relativeToEaster(year int, name string) time.Time {
+// relativeToEaster returns the date of a movable feast or fast for the given year,
+// calculated by applying the feast's offset relative to Easter Sunday.
+//
+// The boolean return value reports whether the provided name matches a known
+// feast or fast defined in RelativeToEasterDays. If no match is found, the
+// returned time value is the zero time and the boolean will be false.
+//
+// This function does not panic and is safe to use with untrusted input.
+func relativeToEaster(year int, name string) (time.Time, bool) {
 	for _, r := range RelativeToEasterDays {
 		if r.Name == name {
-			return Easter(year).AddDate(0, 0, r.Offset)
+			return Easter(year).AddDate(0, 0, r.Offset), true
 		}
 	}
-	panic("Unknown feast/fast: " + name)
+	return time.Time{}, false
+}
+
+// mustRelativeToEaster returns the date of a movable feast or fast for the given year,
+// calculated by applying the feast's offset relative to Easter Sunday.
+//
+// It panics if the provided name does not correspond to a known feast or fast.
+// This function is intended for internal use where the feast name is a known
+// constant and its presence in RelativeToEasterDays is an invariant.
+func mustRelativeToEaster(year int, name string) time.Time {
+	if d, ok := relativeToEaster(year, name); ok {
+		return d
+	}
+	panic("computus: unknown feast/fast: " + name)
 }
 
 // AshWednesday calculates the date of Ash Wednesday for a given year
-func AshWednesday(year int) time.Time { return relativeToEaster(year, "Ash Wednesday") }
+func AshWednesday(year int) time.Time { return mustRelativeToEaster(year, "Ash Wednesday") }
 
 // PalmSunday calculates the date of Palm Sunday for a given year
-func PalmSunday(year int) time.Time { return relativeToEaster(year, "Palm Sunday") }
+func PalmSunday(year int) time.Time { return mustRelativeToEaster(year, "Palm Sunday") }
 
 // SpyWednesday calculates the date of Spy Wednesday for a given year
-func SpyWednesday(year int) time.Time { return relativeToEaster(year, "Spy Wednesday") }
+func SpyWednesday(year int) time.Time { return mustRelativeToEaster(year, "Spy Wednesday") }
 
 // HolyThursday calculates the date of Holy Thursday for a given year
-func HolyThursday(year int) time.Time { return relativeToEaster(year, "Holy Thursday") }
+func HolyThursday(year int) time.Time { return mustRelativeToEaster(year, "Holy Thursday") }
 
 // GoodFriday calculates the date of Good Friday for a given year
-func GoodFriday(year int) time.Time { return relativeToEaster(year, "Good Friday") }
+func GoodFriday(year int) time.Time { return mustRelativeToEaster(year, "Good Friday") }
 
 // HolySaturday calculates the date of Holy Saturday for a given year
-func HolySaturday(year int) time.Time { return relativeToEaster(year, "Holy Saturday") }
+func HolySaturday(year int) time.Time { return mustRelativeToEaster(year, "Holy Saturday") }
 
 // Ascension calculates the date of Ascension for a given year
-func Ascension(year int) time.Time { return relativeToEaster(year, "Ascension") }
+func Ascension(year int) time.Time { return mustRelativeToEaster(year, "Ascension") }
 
 // Pentecost calculates the date of Pentecost for a given year
-func Pentecost(year int) time.Time { return relativeToEaster(year, "Pentecost") }
+func Pentecost(year int) time.Time { return mustRelativeToEaster(year, "Pentecost") }
 
 // CorpusChristi calculates the date of CorpusChristi for a given year
-func CorpusChristi(year int) time.Time { return relativeToEaster(year, "Corpus Christi") }
+func CorpusChristi(year int) time.Time { return mustRelativeToEaster(year, "Corpus Christi") }
 
 // OctaveOfEaster calculates the date of The Octave of Easter (Low Sunday) for a given year
 func OctaveOfEaster(year int) time.Time {
-	return relativeToEaster(year, "The Octave of Easter (Low Sunday)")
+	return mustRelativeToEaster(year, "The Octave of Easter (Low Sunday)")
 }
 
 // LowSunday is a wrapper around OctaveOfEaster. It calculates the date of The Octave of Easter (Low Sunday) for a given year
@@ -115,40 +135,40 @@ func LowSunday(year int) time.Time {
 }
 
 // EasterMonday calculates the date of Easter Monday for a given year
-func EasterMonday(year int) time.Time { return relativeToEaster(year, "Easter Monday") }
+func EasterMonday(year int) time.Time { return mustRelativeToEaster(year, "Easter Monday") }
 
 // EasterTuesday calculates the date of Easter Tuesday for a given year
-func EasterTuesday(year int) time.Time { return relativeToEaster(year, "Easter Tuesday") }
+func EasterTuesday(year int) time.Time { return mustRelativeToEaster(year, "Easter Tuesday") }
 
 // TrinitySunday calculates the date of Trinity Sunday for a given year
-func TrinitySunday(year int) time.Time { return relativeToEaster(year, "Trinity Sunday") }
+func TrinitySunday(year int) time.Time { return mustRelativeToEaster(year, "Trinity Sunday") }
 
 // EmberWednesdayLent calculates the date of Ember Wednesday in Lent
 func EmberWednesdayLent(year int) time.Time {
-	return relativeToEaster(year, EmberWedLent)
+	return mustRelativeToEaster(year, EmberWedLent)
 }
 
 // EmberFridayLent calculates the date of Ember Friday in Lent
 func EmberFridayLent(year int) time.Time {
-	return relativeToEaster(year, EmberFriLent)
+	return mustRelativeToEaster(year, EmberFriLent)
 }
 
 // EmberSaturdayLent calculates the date of Ember Saturday in Lent
 func EmberSaturdayLent(year int) time.Time {
-	return relativeToEaster(year, EmberSatLent)
+	return mustRelativeToEaster(year, EmberSatLent)
 }
 
 // EmberWednesdayPentecost calculates the date of Ember Wednesday after Pentecost
 func EmberWednesdayPentecost(year int) time.Time {
-	return relativeToEaster(year, EmberWedPent)
+	return mustRelativeToEaster(year, EmberWedPent)
 }
 
 // EmberFridayPentecost calculates the date of Ember Friday after Pentecost
 func EmberFridayPentecost(year int) time.Time {
-	return relativeToEaster(year, EmberFriPent)
+	return mustRelativeToEaster(year, EmberFriPent)
 }
 
 // EmberSaturdayPentecost calculates the date of Ember Saturday after Pentecost
 func EmberSaturdayPentecost(year int) time.Time {
-	return relativeToEaster(year, EmberSatPent)
+	return mustRelativeToEaster(year, EmberSatPent)
 }
