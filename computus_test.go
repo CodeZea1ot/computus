@@ -122,6 +122,33 @@ func TestPalmSundayInRange(t *testing.T) {
 	}
 }
 
+// TestSpyWednesday verifies that Spy Wednesday is correctly calculated
+// as 4 days before Easter Sunday for a selection of known years.
+func TestSpyWednesday(t *testing.T) {
+	for year, easterStr := range verifiedEasterDates {
+		easter, _ := time.Parse("2006-01-02", easterStr)
+		expected := easter.AddDate(0, 0, -4).Format("2006-01-02")
+		got := SpyWednesday(year).Format("2006-01-02")
+		if got != expected {
+			t.Errorf("SpyWednesday(%d) = %s, want %s", year, got, expected)
+		}
+	}
+}
+
+// TestSpyWednesdayInRange ensures that Spy Wednessday is always exactly
+// 4 days before Easter Sunday for all Gregorian years.
+func TestSpyWednesdayInRange(t *testing.T) {
+	for year := 1583; year <= 3000; year++ {
+		spyWednesday := SpyWednesday(year)
+		easter := Easter(year)
+
+		diff := int(easter.Sub(spyWednesday).Hours() / 24)
+		if diff != 4 {
+			t.Fatalf("SpyWednesday(%d) is %d days before Easter, want 4", year, diff)
+		}
+	}
+}
+
 // TestHolyThursday verifies that Holy Thursday is correctly calculated
 // as 3 days before Easter Sunday for a selection of known years.
 func TestHolyThursday(t *testing.T) {

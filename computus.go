@@ -39,6 +39,12 @@ func PalmSunday(year int) time.Time {
 	return easter.AddDate(0, 0, -7)
 }
 
+// SpyWednesday returns the date of Spy Wednesday for the given year.
+// Spy Wednesday is always 4 days before Easter Sunday.
+func SpyWednesday(year int) time.Time {
+	return Easter(year).AddDate(0, 0, -4)
+}
+
 // HolyThursday returns the date of Holy Thursday for the given year.
 // Holy Thursday is always 3 days before Easter Sunday.
 func HolyThursday(year int) time.Time {
