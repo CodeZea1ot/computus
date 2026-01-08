@@ -8,15 +8,24 @@ type RelativeToEaster struct {
 	Offset int    // Days relative to Easter (negative = before, positive = after)
 }
 
+const (
+	EmberWedLent = "Ember Wednesday (Lent)"
+	EmberFriLent = "Ember Friday (Lent)"
+	EmberSatLent = "Ember Saturday (Lent)"
+	EmberWedPent = "Ember Wednesday (Pentecost)"
+	EmberFriPent = "Ember Friday (Pentecost)"
+	EmberSatPent = "Ember Saturday (Pentecost)"
+)
+
 // RelativeToEasterDays represents a collection of movable feasts/fasts whose dates are relative to the date of Easter
 var RelativeToEasterDays = []RelativeToEaster{
 	{"Septuagesima Sunday", -63},
 	{"Sexagesima Sunday", -56},
 	{"Quinguagesima Sunday", -49},
 	{"Ash Wednesday", -46},
-	{"Ember Wednesday (Lent)", -39},
-	{"Ember Friday (Lent)", -37},
-	{"Ember Saturday (Lent)", -36},
+	{EmberWedLent, -39},
+	{EmberFriLent, -37},
+	{EmberSatLent, -36},
 	{"Passion Sunday", -14},
 	{"Palm Sunday", -7},
 	{"Spy Wednesday", -4},
@@ -28,6 +37,9 @@ var RelativeToEasterDays = []RelativeToEaster{
 	{"The Octave of Easter (Low Sunday)", 7},
 	{"Ascension", 39},
 	{"Pentecost", 49},
+	{EmberWedPent, 52},
+	{EmberFriPent, 54},
+	{EmberSatPent, 55},
 	{"Trinity Sunday", 56},
 	{"Corpus Christi", 60},
 }
@@ -110,3 +122,33 @@ func EasterTuesday(year int) time.Time { return relativeToEaster(year, "Easter T
 
 // TrinitySunday calculates the date of Trinity Sunday for a given year
 func TrinitySunday(year int) time.Time { return relativeToEaster(year, "Trinity Sunday") }
+
+// EmberWednesdayLent calculates the date of Ember Wednesday in Lent
+func EmberWednesdayLent(year int) time.Time {
+	return relativeToEaster(year, EmberWedLent)
+}
+
+// EmberFridayLent calculates the date of Ember Friday in Lent
+func EmberFridayLent(year int) time.Time {
+	return relativeToEaster(year, EmberFriLent)
+}
+
+// EmberSaturdayLent calculates the date of Ember Saturday in Lent
+func EmberSaturdayLent(year int) time.Time {
+	return relativeToEaster(year, EmberSatLent)
+}
+
+// EmberWednesdayPentecost calculates the date of Ember Wednesday after Pentecost
+func EmberWednesdayPentecost(year int) time.Time {
+	return relativeToEaster(year, EmberWedPent)
+}
+
+// EmberFridayPentecost calculates the date of Ember Friday after Pentecost
+func EmberFridayPentecost(year int) time.Time {
+	return relativeToEaster(year, EmberFriPent)
+}
+
+// EmberSaturdayPentecost calculates the date of Ember Saturday after Pentecost
+func EmberSaturdayPentecost(year int) time.Time {
+	return relativeToEaster(year, EmberSatPent)
+}
