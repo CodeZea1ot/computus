@@ -24,3 +24,10 @@ func Easter(year int) time.Time {
 
 	return time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.UTC)
 }
+
+// AshWednesday returns the date of Ash Wednesday for the given year.
+// Ash Wednesday is 46 days before Easter Sunday.
+func AshWednesday(year int) time.Time {
+	easter := Easter(year)
+	return easter.AddDate(0, 0, -46)
+}
