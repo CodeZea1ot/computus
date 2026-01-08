@@ -106,7 +106,7 @@ func LowSunday(year int) time.Time {
 func EasterMonday(year int) time.Time { return relativeToEaster(year, "Easter Monday") }
 
 // EasterTuesday calculates the date of Easter Tuesday for a given year
-func EasterTuesday(year int) time.Time { return relativeToEaster(year, "EasterTuesday") }
+func EasterTuesday(year int) time.Time { return relativeToEaster(year, "Easter Tuesday") }
 
 // TrinitySunday calculates the date of Trinity Sunday for a given year
 func TrinitySunday(year int) time.Time { return relativeToEaster(year, "Trinity Sunday") }
