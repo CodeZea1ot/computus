@@ -80,3 +80,22 @@ func TestAshWednesday(t *testing.T) {
 		}
 	}
 }
+
+// TestAshWednesdayInRange verifies that the Ash Wednesday calculation
+// is correct for all Gregorian years from 1583 to 3000.
+// According to the liturgical rules, Ash Wednesday must always
+// fall exactly 46 days before Easter Sunday. This test computes
+// Easter for each year in the range and ensures that Ash Wednesday
+// is precisely 46 days earlier.
+func TestAshWednesdayInRange(t *testing.T) {
+	for year := 1583; year <= 3000; year++ {
+		ash := AshWednesday(year)
+		easter := Easter(year)
+
+		// Must always be 46 days before Easter
+		diff := int(easter.Sub(ash).Hours() / 24)
+		if diff != 46 {
+			t.Fatalf("AshWednesday(%d) is %d days before Easter, want 46", year, diff)
+		}
+	}
+}
