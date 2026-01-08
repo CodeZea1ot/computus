@@ -47,7 +47,7 @@ func checkDaysFromEaster(t *testing.T, name string) {
 	}
 
 	for year := beginYear; year <= endYear; year++ {
-		dayToCheck := relativeToEaster(year, name)
+		dayToCheck := mustRelativeToEaster(year, name)
 		easter := Easter(year)
 
 		diff := int(dayToCheck.Sub(easter).Hours() / 24)
